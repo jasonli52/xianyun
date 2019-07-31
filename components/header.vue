@@ -14,7 +14,7 @@
           <nuxt-link to="/air">机票</nuxt-link>
         </el-row>
         <!-- 登录失败 -->
-        <div v-if="false">
+          <div v-if="!$store.state.user.userInfo.token">
           <nuxt-link to="/user/login">登录 注册</nuxt-link>
         </div>
         <!-- 登录成功 -->
@@ -22,12 +22,13 @@
           <el-dropdown>
             <span class="el-dropdown-link">
               <img src="http://157.122.54.189:9095/assets/images/avatar.jpg" alt />
-              快到碗里来
+              {{$store.state.user.userInfo.user.nickname}}
+             
               <i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item>个人中心</el-dropdown-item>
-              <el-dropdown-item>退出</el-dropdown-item>
+              <el-dropdown-item @click.native="handleLogout">退出</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </div>
@@ -37,7 +38,19 @@
 </template>
 
 <script>
-export default {};
+export default {
+ mounted(){
+        // console.log( this.$store.state.user.userInfo.user.nickname)
+        // console.log( this.$store.state.user.userInfo.user.nickname)
+    },
+
+    methods: {
+        handleLogout(){
+            // 清除userinfo的数据
+            this.$store.commit("user/clearUserInfo");
+        }
+    }
+};
 </script>
 
 <style lang="less" scoped>
