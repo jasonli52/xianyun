@@ -1,57 +1,118 @@
 <template>
-    <section class="contianer">
-        <el-row  type="flex" justify="space-between">
+  <section class="contianer">
+    <el-row type="flex" justify="space-between">
+      <!-- 顶部过滤列表 -->
+      <div class="flights-content">
+        <!-- 过滤条件 -->
+        <div></div>
 
-            <!-- 顶部过滤列表 -->
-            <div class="flights-content">
-                <!-- 过滤条件 -->
-                <div>
-                    
-                </div>
-                
-                <!-- 航班头部布局 -->
-                <FlightsListHead/>
-                
-                
-                <!-- 航班信息 -->
-                <div>
-                    
-                </div>
-            </div>
+        <!-- 航班头部布局 -->
+        <FlightsListHead />
 
-            <!-- 侧边栏 -->
-            <div class="aside">
-                <!-- 侧边栏组件 -->
-            </div>
-        </el-row>
-    </section>
+        <!-- 航班信息 -->
+        <div>
+          <!-- flightsData.flights是后台返回的机票列表 -->
+          <FlightsItem v-for="(item,index) in dataList" :key="index" :data="item" />
+          <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="pageIndex"
+            :page-sizes="[2, 4, 6, 8]"
+            :page-size="pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total"
+          ></el-pagination>
+        </div>
+      </div>
+
+      <!-- 侧边栏 -->
+      <div class="aside">
+        <!-- 侧边栏组件 -->
+      </div>
+    </el-row>
+  </section>
 </template>
 
 <script>
-
-import FlightsListHead from "@/components/air/flightsListHead.vue"
-
+import FlightsListHead from "@/components/air/flightsListHead.vue";
+import FlightsItem from "@/components/air/flightsItem.vue";
 export default {
-    data(){
-        return {
-            
+  data() {
+    return {
+      //后台返回的对象(数据)
+      flightsData: {},
+      // 保存当前显示的列表数据
+      dataList: [],
+
+      // 当前页数
+      pageIndex: 1,
+      // 显示的条数
+      pageSize: 2,
+      // 总条数
+      total: 0
+    };
+  },
+  components: {
+    FlightsListHead,
+    FlightsItem
+  },
+  methods: {
+        // 修改分页条数时候触发
+        handleSizeChange(value){
+            // 修改分页条数
+            this.pageSize = value;
+            // 获取分页的数据
+            this.getDataList();
+        },
+
+        // 切换页数时候触发
+        handleCurrentChange(value){
+            // 修改页数
+            this.pageIndex = value;
+
+            // 获取分页的数据
+            this.getDataList();
+        },
+
+        // 获取分页的数据
+        getDataList(){
+             // 修改dataList的数据 //0 | 2 //2 | 4
+           this.dataList = this.flightsData.flights.slice( 
+               (this.pageIndex - 1) * this.pageSize,  
+               (this.pageIndex  - 1) * this.pageSize + this.pageSize 
+            );
         }
-    }
-}
+    },
+  mounted() {
+    this.$axios({
+      url: "/airs",
+      method: "GET",
+      // 可以请求到url路径里的五个参数
+      params: this.$route.query
+    }).then(res => {
+      this.flightsData = res.data;
+      // 总条数
+      this.total = this.flightsData.flights.length;
+
+      // 切割出当前页面要显示的数据
+      this.dataList = this.flightsData.flights.slice(0, 2);
+    });
+  }
+};
 </script>
 
 <style scoped lang="less">
-    .contianer{
-        width:1000px;
-        margin:20px auto;
-    }
+.contianer {
+  width: 1000px;
+  margin: 20px auto;
+}
 
-    .flights-content{
-        width:745px;
-        font-size:14px;
-    }
+.flights-content {
+  width: 745px;
+  font-size: 14px;
+}
 
-    .aside{
-        width:240px;
-    } 
+.aside {
+  width: 240px;
+}
 </style>
