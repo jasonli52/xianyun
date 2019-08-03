@@ -31,7 +31,7 @@
           placeholder="请搜索到达城市"
           @select="handleDestSelect"
           class="el-autocomplete"
-          v-model="form.descCity"
+          v-model="form.destCity"
         ></el-autocomplete>
       </el-form-item>
       <el-form-item label="出发时间">
@@ -156,7 +156,8 @@ export default {
 
     // 触发和目标城市切换时触发
     handleReverse() {
-        const {departCity,departCode,destCity,destCode}=this.form
+      // let newForm = Object.assign({},this.form)
+        const {departCity,  departCode,  destCity, destCode}= this.form
          this.form.departCity = destCity;
             this.form.departCode = destCode;
 
@@ -164,7 +165,7 @@ export default {
             this.form.destCode = departCode;
     },
 
-    // 提交表单是触发
+    // 提交表单是触发,
     handleSubmit() {
          // 表单验证
             if(!this.form.departCity){
