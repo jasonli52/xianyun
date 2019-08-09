@@ -49,7 +49,8 @@
                         <el-col :span="3" class="choose-button">
                             <el-button 
                             type="warning" 
-                            size="mini">
+                            size="mini"
+                            @click="handleToLink( data.id,  item.seat_xid)">
                             选定
                             </el-button>
                             <p>剩余：{{ item.discount }}</p>
@@ -69,7 +70,7 @@ export default {
         }
     },
     // 声明组件可以接收哪些属性
-    // props: ["data"],
+   // props: ["data"],
 
     // props除了可以等于数组，还可以等于对象
     // 好处就是可以知道该属性的类型，还有不传值时候还有默认值
@@ -100,6 +101,19 @@ export default {
             const min = dis % 60;
 
             return  `${hours}小时${min}分钟`;
+        }
+    },
+
+    methods: {
+        // 跳转表单页
+        handleToLink(id, seat_xid){
+            this.$router.push({
+                path: "/air/order",
+                query: {
+                    id,
+                    seat_xid
+                }
+            })
         }
     }
 }
