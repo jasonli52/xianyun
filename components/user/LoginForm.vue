@@ -61,7 +61,9 @@ export default {
                        data:this.form
                    }).then(res=>{
                        this.$store.commit("user/setUserInfo", res.data)
-                       this.$router.push("/")
+                    //    this.$router.push("/")
+                    //返回上一页
+                    this.$router.back()
                    })
                }
            })
